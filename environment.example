@@ -68,7 +68,16 @@ export SWAYRIDER_LOCAL_SEARCHSERVICE_HTTP_PORT="8088"
 export SWAYRIDER_LOCAL_SEARCHSERVICE_GRPC_PORT="8089"
 export SWAYRIDER_LOCAL_TILESSERVICE_HOST="127.0.0.1"
 export SWAYRIDER_LOCAL_TILESSERVICE_HTTP_PORT="8090"
+# Host as seen from each mobile run target. iOS Simulator/macOS/web share the
+# host's network namespace, so 127.0.0.1 works directly. Android emulators run
+# in their own VM with a NAT'd loopback, so they need a special host alias
+# instead: the stock AVD uses 10.0.2.2; Genymotion (VirtualBox-based) uses
+# 10.0.3.2. A physical device needs your machine's real LAN IP instead of any
+# of these. See .vscode/README.md ("Mobile app") for which launch config uses
+# which variable.
 export SWAYRIDER_LOCAL_API_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR="10.0.2.2"
+export SWAYRIDER_LOCAL_API_HOST_GENYMOTION="10.0.3.2"
 export SWAYRIDER_LOCAL_API_HTTP_PORT="8888"
 
 

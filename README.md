@@ -83,7 +83,7 @@ Two configs:
 
 Under the hood, `swayriderapp` has no `.env`/dotenv setup — all backend connection settings are compile-time `--dart-define` values consumed in `swayriderapp/lib/config/app_config.dart`, one `SCHEME`/`HOST`/`PORT`/`PATH_PREFIX` group each for `AUTH_API_*`, `TILES_API_*`, `SEARCH_API_*`. The "Local API" config only overrides `SCHEME`/`HOST`/`PORT` — the path-prefix defaults already match what `swayrider-api` serves them on. See `swayriderapp/DEVELOPMENT.md` ("Backend / Configuration") for the full variable list and manual `flutter run --dart-define=...` usage.
 
-**Simulator/emulator gotcha**: `127.0.0.1` only reaches your host machine from a run target that shares its network namespace — iOS Simulator, macOS, and web all work out of the box with the config as-is. An **Android emulator** needs `10.0.2.2` instead; a **physical device** needs your machine's real LAN IP (and the phone must be able to reach it — same network, firewall permitting). Override by running manually rather than via the canned config, e.g.:
+**Simulator/emulator gotcha**: `127.0.0.1` only reaches your host machine from a run target that shares its network namespace — iOS Simulator, macOS, and web all work out of the box with the config as-is. A stock **Android emulator (AVD)** needs `10.0.2.2` instead; a **Genymotion** virtual device needs `10.0.3.2` (its VirtualBox-based networking uses a different host alias than the standard AVD); a **physical device** needs your machine's real LAN IP (and the phone must be able to reach it — same network, firewall permitting). Set `SWAYRIDER_LOCAL_API_HOST` accordingly in your `.envrc`/`environment.local.sh`, or override by running manually rather than via the canned config, e.g.:
 ```bash
 cd swayriderapp
 flutter run \
