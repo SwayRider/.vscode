@@ -115,6 +115,19 @@ export SWAYRIDER_AUTH_DB_NAME="authdb"
 export SWAYRIDER_ADMIN_EMAIL="admin@example.com"
 export SWAYRIDER_ADMIN_PASSWORD="adminpassword"
 
+# Authservice JWT signing key encryption
+#
+# Base64-encoded 256-bit master key authservice uses to encrypt the JWT
+# signing private key at rest. Required -- authservice refuses to start
+# without it. Generate a real one with: openssl rand -base64 32
+# The placeholder below is dev-only; use your own dev-mini's value (or the
+# one shared with you) if connecting to a shared dev backend's database.
+export SWAYRIDER_ENCRYPTION_MASTER_KEY="V8kyGk1egzJDLk4JP1eIgv1JYh5Q4JIGWHOaEEtEPRM="
+
+# Comma-separated list of retired master keys, only needed if you're
+# actively rotating SWAYRIDER_ENCRYPTION_MASTER_KEY. Leave empty otherwise.
+export SWAYRIDER_ENCRYPTION_MASTER_KEY_PREVIOUS=""
+
 # Mailer
 export SWAYRIDER_MAILER_ADDRESS="swayrider@example.com"
 
