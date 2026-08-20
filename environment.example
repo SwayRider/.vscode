@@ -1,0 +1,209 @@
+# Connection to deployed dev environment for testing
+# =============================================================================
+
+# Set this to the IP address of the dev backend, when connecting via
+# wireguard it should be the address below
+export SWAYRIDER_DEVBACKEND_HOST="10.8.0.1"
+
+# The port of the backend postgress database, default is 35432 (dev-mini)
+export SWAYRIDER_DEVBACKEND_DB_PORT="35432"
+
+
+# Connection details of the indivicual backend services
+#
+# You might need to adjust the porsts, these defaults are taken from 
+# the dev-mini environment
+# =============================================================================
+
+export SWAYRIDER_AUTHSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_AUTHSERVICE_HTTP_PORT="34001"
+export SWAYRIDER_AUTHSERVICE_GRPC_PORT="34101"
+export SWAYRIDER_AUTHSERVICE_WEB_PORT="34201"
+export SWAYRIDER_MAILSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_MAILSERVICE_HTTP_PORT="34002"
+export SWAYRIDER_MAILSERVICE_GRPC_PORT="34102"
+export SWAYRIDER_REGIONSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_REGIONSERVICE_HTTP_PORT="34003"
+export SWAYRIDER_REGIONSERVICE_GRPC_PORT="34103"
+export SWAYRIDER_ROUTERSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_ROUTERSERVICE_HTTP_PORT="34004"
+export SWAYRIDER_ROUTERSERVICE_GRPC_PORT="34104"
+export SWAYRIDER_SEARCHSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_SEARCHSERVICE_HTTP_PORT="34007"
+export SWAYRIDER_SEARCHSERVICE_GRPC_PORT="34107"
+export SWAYRIDER_TILESSERVICE_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_TILESSERVICE_HTTP_PORT="34005"
+
+
+# Connection details of the API gateway
+#
+# You might need to adjust the ports, these defaults are taken from 
+# the dev-mini environment
+# =============================================================================
+
+export SWAYRIDER_API_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_API_HTTP_PORT="34000"
+
+
+# Local connections
+#
+# These are used for connecting to locally launched debug services
+# =============================================================================
+
+export SWYARIDER_LOCAL_AUTHSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT="8080"
+export SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT="8081"
+export SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT="8000"
+export SWAYRIDER_LOCAL_MAILSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_MAILSERVICE_HTTP_PORT="8082"
+export SWAYRIDER_LOCAL_MAILSERVICE_GRPC_PORT="8083"
+export SWAYRIDER_LOCAL_REGIONSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_REGIONSERVICE_HTTP_PORT="8084"
+export SWAYRIDER_LOCAL_REGIONSERVICE_GRPC_PORT="8085"
+export SWAYRIDER_LOCAL_ROUTERSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_ROUTERSERVICE_HTTP_PORT="8086"
+export SWAYRIDER_LOCAL_ROUTERSERVICE_GRPC_PORT="8087"
+export SWAYRIDER_LOCAL_SEARCHSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_SEARCHSERVICE_HTTP_PORT="8088"
+export SWAYRIDER_LOCAL_SEARCHSERVICE_GRPC_PORT="8089"
+export SWAYRIDER_LOCAL_TILESSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_TILESSERVICE_HTTP_PORT="8090"
+export SWAYRIDER_LOCAL_API_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_API_HTTP_PORT="8888"
+
+
+# Layer-10 config settings
+#
+# These settings are used to configure the connection to the layer-10 services
+# They are based on the dev-mini environment.
+# Adjust when needed
+# =============================================================================
+
+export SWAYRIDER_SEARCHSERVICE_PELIAS_REGIONS="benelux=http://${SWAYRIDER_DEVBACKEND_HOST}:33111/v1,france=http://${SWAYRIDER_DEVBACKEND_HOST}:33121/v1,germany=http://${SWAYRIDER_DEVBACKEND_HOST}:33131/v1"
+
+export SWAYRIDER_ROUTERSERVICE_VALHALLA_REGION_HOSTS="baltics-russia:${SWAYRIDER_DEVBACKEND_HOST},central-europe:${SWAYRIDER_DEVBACKEND_HOST},iberian-peninsula:${SWAYRIDER_DEVBACKEND_HOST},scandinavia:${SWAYRIDER_DEVBACKEND_HOST},south-eastern-europe:${SWAYRIDER_DEVBACKEND_HOST},south-europe:${SWAYRIDER_DEVBACKEND_HOST},uk-iceland:${SWAYRIDER_DEVBACKEND_HOST},west-europe:${SWAYRIDER_DEVBACKEND_HOST}"
+export SWAYRIDER_ROUTERSERVICE_VALHALLA_REGION_PORTS="baltics-russia:33001,central-europe:33002,iberian-peninsula:33003,scandinavia:33004,south-eastern-europe:33005,south-europe:33006,uk-iceland:33007,west-europe:33008"
+
+
+# Local Redis
+#
+# The Swayrider-API needs a local redis instance when running it locally
+# Thise are the connection details, adjust them should you change the settings
+# in testing/infra/redis/compose.yml
+# =============================================================================
+
+export SWAYRIDER_LOCAL_REDIS_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_REDIS_PORT="36379"
+
+
+# Secrets
+#
+# Secrets of the deployed dev system
+#
+# Either spin up you own dev-mini with custom secrets or ask us to provide
+# you with the dev secrest (Do not expose them !)
+#
+# Adjust to the correct values
+# =============================================================================
+
+# Postgres
+export SWAYRIDER_DB_USER="postgresadmin"
+export SWAYRIDER_DB_PASSWORD="postgrespassword"
+export SWAYRIDER_AUTH_DB_NAME="authdb"
+
+# Admin
+export SWAYRIDER_ADMIN_EMAIL="admin@example.com"
+export SWAYRIDER_ADMIN_PASSWORD="adminpassword"
+
+# Mailer
+export SWAYRIDER_MAILER_ADDRESS="swayrider@example.com"
+
+# Mailservice SMTP relay
+#
+# Only needed when running mailservice locally (it sends real mail, so it
+# needs a real SMTP relay/catcher, e.g. your own relay or a local Mailpit/Mailhog).
+export SWAYRIDER_MAIL_SMTP_HOST="<smtp-host>"
+export SWAYRIDER_MAIL_SMTP_PORT="587"
+export SWAYRIDER_MAIL_SMTP_USER="<smtp-user>"
+export SWAYRIDER_MAIL_SMTP_PASSWORD="<smtp-password>"
+
+# API Client id and secret
+#
+# When running your own dev environment:
+# ```bash
+# cd layer-30`
+# docker exec swayrider-api bash
+# cat /credentials/swayrider-api.env
+# ```
+export SWAYRIDER_API_CLIENT_ID="<clientid>"
+export SWAYRIDER_API_CLIENT_SECRET="<clientsecret>"
+
+
+# ========================================================
+# Dynamic configurations
+#
+# Configure the env variables here and reload the env file
+# to configure the current debug environment.
+# This allows you to configure which services are running
+# on the dev environment and which in a debugger on the
+# local machine.
+#
+# Note: GEODATA_DIR (regionservice), TILES_PATH (tilesservice), and
+# MAIL_TEMPLATES_DIR (mailservice) are workspace-relative filesystem paths,
+# so they're set directly in .vscode/launch.json via ${workspaceFolder}
+# instead of here.
+# ========================================================
+
+# Auth Service
+export SWAYRIDER_DEBUG_AUTHSERVICE_HOST="${SWAYRIDER_AUTHSERVICE_HOST}"
+export SWAYRIDER_DEBUG_AUTHSERVICE_HTTP_PORT="${SWAYRIDER_AUTHSERVICE_HTTP_PORT}"
+export SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT="${SWAYRIDER_AUTHSERVICE_GRPC_PORT}"
+export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_AUTHSERVICE_WEB_PORT}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_HOST="${SWAYRIDER_LOCAL_AUTHSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}"
+
+# Mail Service
+export SWAYRIDER_DEBUG_MAILSERVICE_HOST="${SWAYRIDER_MAILSERVICE_HOST}"
+export SWAYRIDER_DEBUG_MAILSERVICE_HTTP_PORT="${SWAYRIDER_MAILSERVICE_HTTP_PORT}"
+export SWAYRIDER_DEBUG_MAILSERVICE_GRPC_PORT="${SWAYRIDER_MAILSERVICE_GRPC_PORT}"
+#export SWAYRIDER_DEBUG_MAILSERVICE_HOST="${SWAYRIDER_LOCAL_MAILSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_MAILSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_MAILSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_MAILSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_MAILSERVICE_GRPC_PORT}"
+
+# Region Service
+export SWAYRIDER_DEBUG_REGIONSERVICE_HOST="${SWAYRIDER_REGIONSERVICE_HOST}"
+export SWAYRIDER_DEBUG_REGIONSERVICE_HTTP_PORT="${SWAYRIDER_REGIONSERVICE_HTTP_PORT}"
+export SWAYRIDER_DEBUG_REGIONSERVICE_GRPC_PORT="${SWAYRIDER_REGIONSERVICE_GRPC_PORT}"
+#export SWAYRIDER_DEBUG_REGIONSERVICE_HOST="${SWAYRIDER_LOCAL_REGIONSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_REGIONSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_REGIONSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_REGIONSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_REGIONSERVICE_GRPC_PORT}"
+
+# Router Service
+export SWAYRIDER_DEBUG_ROUTERSERVICE_HOST="${SWAYRIDER_ROUTERSERVICE_HOST}"
+export SWAYRIDER_DEBUG_ROUTERSERVICE_HTTP_PORT="${SWAYRIDER_ROUTERSERVICE_HTTP_PORT}"
+export SWAYRIDER_DEBUG_ROUTERSERVICE_GRPC_PORT="${SWAYRIDER_ROUTERSERVICE_GRPC_PORT}"
+#export SWAYRIDER_DEBUG_ROUTERSERVICE_HOST="${SWAYRIDER_LOCAL_ROUTERSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_ROUTERSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_ROUTERSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_ROUTERSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_ROUTERSERVICE_GRPC_PORT}"
+
+# Search Service
+export SWAYRIDER_DEBUG_SEARCHSERVICE_HOST="${SWAYRIDER_SEARCHSERVICE_HOST}"
+export SWAYRIDER_DEBUG_SEARCHSERVICE_HTTP_PORT="${SWAYRIDER_SEARCHSERVICE_HTTP_PORT}"
+export SWAYRIDER_DEBUG_SEARCHSERVICE_GRPC_PORT="${SWAYRIDER_SEARCHSERVICE_GRPC_PORT}"
+#export SWAYRIDER_DEBUG_SEARCHSERVICE_HOST="${SWAYRIDER_LOCAL_SEARCHSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_SEARCHSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_SEARCHSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_SEARCHSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_SEARCHSERVICE_GRPC_PORT}"
+
+# Tiles Service
+export SWAYRIDER_DEBUG_TILESSERVICE_HOST="${SWAYRIDER_TILESSERVICE_HOST}"
+export SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT="${SWAYRIDER_TILESSERVICE_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_TILESSERVICE_HOST="${SWAYRIDER_LOCAL_TILESSERVICE_HOST}"
+#export SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_TILESSERVICE_HTTP_PORT}"
+
+# API
+export SWAYRIDER_DEBUG_API_HOST="${SWAYRIDER_API_HOST}"
+export SWAYRIDER_DEBUG_API_HTTP_PORT="${SWAYRIDER_API_HTTP_PORT}"
+#export SWAYRIDER_DEBUG_API_HOST="${SWAYRIDER_LOCAL_API_HOST}"
+#export SWAYRIDER_DEBUG_API_HTTP_PORT="${SWAYRIDER_LOCAL_API_HTTP_PORT}"
