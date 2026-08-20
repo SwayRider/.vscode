@@ -25,6 +25,40 @@
             ]
         },
         {
+            "name": "Mobile - SwayriderApp (Local Genymotion)",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "${workspaceFolder}/swayriderapp",
+            "args": [
+                "--dart-define=AUTH_API_SCHEME=http",
+                "--dart-define=AUTH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
+                "--dart-define=AUTH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=TILES_API_SCHEME=http",
+                "--dart-define=TILES_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
+                "--dart-define=TILES_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=SEARCH_API_SCHEME=http",
+                "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
+                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}"
+            ]
+        },
+        {
+            "name": "Mobile - SwayriderApp (Local Android Emulator)",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "${workspaceFolder}/swayriderapp",
+            "args": [
+                "--dart-define=AUTH_API_SCHEME=http",
+                "--dart-define=AUTH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
+                "--dart-define=AUTH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=TILES_API_SCHEME=http",
+                "--dart-define=TILES_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
+                "--dart-define=TILES_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=SEARCH_API_SCHEME=http",
+                "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
+                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}"
+            ]
+        },
+        {
             "name": "Tests - SwayriderApp",
             "request": "launch",
             "type": "dart",
@@ -48,7 +82,7 @@
                 "REGIONSERVICE_HOST": "${env:SWAYRIDER_REGIONSERVICE_HOST}",
                 "REGIONSERVICE_PORT": "${env:SWAYRIDER_REGIONSERVICE_GRPC_PORT}",
                 "TILESSERVICE_HOST": "${env:SWAYRIDER_TILESSERVICE_HOST}",
-                "TILESSERVICE_PORT": "${env:SWAYRIDER_TILESSERVICE_GRPC_PORT}",
+                "TILESSERVICE_PORT": "${env:SWAYRIDER_TILESSERVICE_HTTP_PORT}",
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
                 "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
                 "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
@@ -72,7 +106,7 @@
                 "REGIONSERVICE_HOST": "${env:SWAYRIDER_DEBUG_REGIONSERVICE_HOST}",
                 "REGIONSERVICE_PORT": "${env:SWAYRIDER_DEBUG_REGIONSERVICE_GRPC_PORT}",
                 "TILESSERVICE_HOST": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HOST}",
-                "TILESSERVICE_PORT": "${env:SWAYRIDER_DEBUG_TILESSERVICE_GRPC_PORT}",
+                "TILESSERVICE_PORT": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT}",
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
                 "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
                 "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
