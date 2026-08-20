@@ -94,7 +94,7 @@
                 "VERIFICATION_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/verify",
                 "RESET_PASSWORD_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/reset-password",
                 "DB_HOST": "${env:SWAYRIDER_DEVBACKEND_HOST}",
-                "DB_PORT": "${env:SWAYRIDER_DEVBACKEND_PORT}",
+                "DB_PORT": "${env:SWAYRIDER_DEVBACKEND_DB_PORT}",
                 "DB_USER": "${env:SWAYRIDER_DB_USER}",
                 "DB_PASSWORD": "${env:SWAYRIDER_DB_PASSWORD}",
                 "DB_NAME": "${env:SWAYRIDER_AUTH_DB_NAME}",
@@ -105,6 +105,8 @@
                 "MAILSERVICE_HOST": "${env:SWAYRIDER_MAILSERVICE_HOST}",
                 "MAILSERVICE_PORT": "${env:SWAYRIDER_MAILSERVICE_GRPC_PORT}",
                 "COOKIE_NAMESPACE": "com.hevanto-it.swayrider",
+                "ENCRYPTION_MASTER_KEY": "${env:SWAYRIDER_ENCRYPTION_MASTER_KEY}",
+                "ENCRYPTION_MASTER_KEY_PREVIOUS": "${env:SWAYRIDER_ENCRYPTION_MASTER_KEY_PREVIOUS}",
                 "LOG_LEVEL": "debug"
             }
         },
