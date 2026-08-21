@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Register API Service Client",
+            "type": "shell",
+            "command": "mkdir -p \"${workspaceFolder}/.local\" && go run ./cmd/swctl auth ensure-service-client --auth-host \"${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}\" --auth-port \"${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}\" --user \"${env:SWAYRIDER_ADMIN_EMAIL}\" --password \"${env:SWAYRIDER_ADMIN_PASSWORD}\" --output \"${workspaceFolder}/.local/swayrider-api.env\" swayrider-api region:query routing:execute search:execute tiles:serve",
+            "options": {
+                "cwd": "${workspaceFolder}/swctl"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -86,7 +86,7 @@
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
                 "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
                 "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
-                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}",
+                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}"
             }
         },
         {
@@ -94,6 +94,8 @@
             "type": "go",
             "request": "launch",
             "program": "${workspaceFolder}/swayrider-api/cmd/swayrider-api",
+            "preLaunchTask": "Register API Service Client",
+            "envFile": "${workspaceFolder}/.local/swayrider-api.env",
             "env": {
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "LOG_LEVEL": "debug",
@@ -108,9 +110,7 @@
                 "TILESSERVICE_HOST": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HOST}",
                 "TILESSERVICE_PORT": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT}",
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
-                "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
-                "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
-                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}",
+                "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}"
             }
         },
         {
@@ -127,15 +127,15 @@
                 "REGISTRATION_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/register",
                 "VERIFICATION_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/verify",
                 "RESET_PASSWORD_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/reset-password",
-                "DB_HOST": "${env:SWAYRIDER_DEVBACKEND_HOST}",
-                "DB_PORT": "${env:SWAYRIDER_DEVBACKEND_DB_PORT}",
-                "DB_USER": "${env:SWAYRIDER_DB_USER}",
-                "DB_PASSWORD": "${env:SWAYRIDER_DB_PASSWORD}",
-                "DB_NAME": "${env:SWAYRIDER_AUTH_DB_NAME}",
+                "DB_HOST": "${env:SWAYRIDER_DEBUG_DB_HOST}",
+                "DB_PORT": "${env:SWAYRIDER_DEBUG_DB_PORT}",
+                "DB_USER": "${env:SWAYRIDER_DEBUG_DB_USER}",
+                "DB_PASSWORD": "${env:SWAYRIDER_DEBUG_DB_PASSWORD}",
+                "DB_NAME": "${env:SWAYRIDER_DEBUG_DB_NAME}",
                 "DB_SSL_MODE": "disable",
                 "ADMIN_EMAIL": "${env:SWAYRIDER_ADMIN_EMAIL}",
                 "ADMIN_PASSWORD": "${env:SWAYRIDER_ADMIN_PASSWORD}",
-                "MAILER_ADDRESS": "${env:SEAYRIDER_MAILER_ADDRESS}",
+                "MAILER_ADDRESS": "${env:SWAYRIDER_MAILER_ADDRESS}",
                 "MAILSERVICE_HOST": "${env:SWAYRIDER_MAILSERVICE_HOST}",
                 "MAILSERVICE_PORT": "${env:SWAYRIDER_MAILSERVICE_GRPC_PORT}",
                 "COOKIE_NAMESPACE": "com.hevanto-it.swayrider",
@@ -230,6 +230,13 @@
             "request": "launch",
             "command": "docker compose up",
             "cwd": "${workspaceFolder}/testing/infra/redis"
+        },
+        {
+            "name": "Postgres - Local (testing/infra/postgres)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker compose up",
+            "cwd": "${workspaceFolder}/testing/infra/postgres"
         }
     ]
 }

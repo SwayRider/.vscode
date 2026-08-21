@@ -7,7 +7,7 @@ This directory has two files that work together:
   source .vscode/environment.example && code .
   ```
   If you'd rather not edit this file directly, copy it first (`cp .vscode/environment.example .vscode/environment.local.sh`) and source the copy instead. If you change a value while VSCode is already open, re-source and restart VSCode (or at least the terminal/debug session) for the change to take effect. See **Loading the env vars automatically with direnv** below for a way to skip this manual step entirely.
-- **`launch.json`** — the Run & Debug configs, one per backend service plus the API gateway, Redis, and the mobile app. Each reads its config from `${env:SWAYRIDER_...}` vars rather than hardcoding values, so the same `launch.json` works whether you're pointed at your own dev-mini or a teammate's.
+- **`launch.json`** — the Run & Debug configs, one per backend service plus the API gateway, Redis, Postgres, and the mobile app. Each reads its config from `${env:SWAYRIDER_...}` vars rather than hardcoding values, so the same `launch.json` works whether you're pointed at your own dev-mini or a teammate's.
 
 ## Loading the env vars automatically with direnv
 
@@ -34,13 +34,16 @@ With this set up, `cd`-ing into the repo (or just having VSCode open on it) keep
 |---|---|---|
 | `SWAYRIDER_<SERVICE>_HOST` / `_HTTP_PORT` / `_GRPC_PORT` | The deployed dev backend, always | A service's **own** config, for the downstream services it depends on (e.g. Mail Service's `AUTHSERVICE_HOST`/`PORT`) |
 | `SWAYRIDER_LOCAL_<SERVICE>_*` | `127.0.0.1`, loopback ports | A service's **own** debug config, for the ports *it itself* binds to when you run it locally |
-| `SWAYRIDER_DEBUG_<SERVICE>_*` | Either the dev backend or `LOCAL_*`, whichever pair is uncommented | Only `API - Debug` — lets you decide, per service, whether the gateway should reach it on the dev backend or on your machine |
+| `SWAYRIDER_DEBUG_<SERVICE>_*` | Either the dev backend or `LOCAL_*`, whichever pair is uncommented | `API - Debug` — lets you decide, per service, whether the gateway should reach it on the dev backend or on your machine |
+| `SWAYRIDER_DEBUG_DB_*` | Either the local test Postgres or the dev backend's, whichever pair is uncommented | The `AuthService` config — its Postgres connection (host/port/credentials/db name) |
 
-The `DEBUG_*` vars are the mechanism for mixing local and remote services (see below). Each service has two exports in `environment.example`: one pointing at the dev backend (active by default) and one commented-out pointing at `LOCAL_*`. Flip which is commented to change where `API - Debug` looks for that service, then re-source.
+The `DEBUG_*` vars are the mechanism for mixing local and remote services (see below). Each service has two exports in `environment.example`: one pointing at the dev backend (active by default) and one commented-out pointing at `LOCAL_*`. Flip which is commented to change where `API - Debug` looks for that service, then re-source. The `SWAYRIDER_DEBUG_DB_*` block works the same way for AuthService's database — except its default is the **local** Postgres (see the AuthService note below for why).
 
 ## Running a single service locally
 
-Just launch that service's config, e.g. **Mail Service**. It binds to its own `LOCAL_*` ports and reaches its dependencies (authservice) on the dev backend — no other setup needed. Same pattern for Region/Router/Tiles Service and AuthService.
+Just launch that service's config, e.g. **Mail Service**. It binds to its own `LOCAL_*` ports and reaches its dependencies (authservice) on the dev backend — no other setup needed. Same pattern for Region/Router/Tiles Service.
+
+**AuthService** is the exception: it connects to Postgres via the `SWAYRIDER_DEBUG_DB_*` vars, which default to the **local** test Postgres (`testing/infra/postgres`) rather than the dev backend, because AuthService runs DB migrations at startup — pointing a locally-debugged instance at the shared dev database would apply migrations to it. Launch **Postgres - Local** first, then **AuthService**. To debug against the deployed dev database instead, flip the `SWAYRIDER_DEBUG_DB_*` block in `environment.example` to its commented-out devbackend alternatives and re-source — only do this if applying migrations to that database is OK.
 
 ## Running the gateway fully against the dev backend
 
@@ -65,14 +68,29 @@ This is the useful case when you're actively working on one or two services and 
    ```
    Do the same for the `Mail Service` block. Leave every other service's `DEBUG_*` block untouched (still pointing at the dev backend).
 2. Re-source the file: `source .vscode/environment.example` (or your local copy).
-3. Launch **Redis - Local**, then **AuthService** and **Mail Service** — each starts listening on its `LOCAL_*` port.
+3. Launch **Postgres - Local** (AuthService's database), **Redis - Local**, then **AuthService** and **Mail Service** — each starts listening on its `LOCAL_*` port.
 4. Launch **API - Debug** — it reads the `DEBUG_*` vars, so it reaches AuthService and Mail Service on `127.0.0.1` at their local ports, and every other service (Region/Router/Search/Tiles) on the dev backend.
 5. VSCode runs multiple debug sessions at once from a single window — start each config in turn from the Run & Debug panel; you don't need multiple VSCode windows.
 6. Exercise the mixed setup through the gateway with either **Mobile - SwayriderApp (Local API)** (below) or the Bruno "public" collection against `127.0.0.1:8888` — see `testing/README.md`.
 
 ## Running everything locally
 
-Same as mixed mode, but flip every service's `DEBUG_*` block to its `LOCAL_*` alternative, then launch every service, Redis, and **API - Debug**.
+Same as mixed mode, but flip every service's `DEBUG_*` block to its `LOCAL_*` alternative, then launch **Postgres - Local** and **Redis - Local** (infrastructure), every service, and **API - Debug**.
+
+## Registering the API gateway's service client (automatic)
+
+The gateway needs a service client on authservice (`region:query routing:execute search:execute tiles:serve` scopes). In the docker stack the `swayrider-api-register` container handles this; for the debugger it's a task:
+
+- **`Register API Service Client`** (`Terminal → Run Task…`) runs `swctl auth ensure-service-client` against the authservice that **API - Debug** reaches (`SWAYRIDER_DEBUG_AUTHSERVICE_HOST`/`_GRPC_PORT`, defaulting to the dev backend) using the admin account (`SWAYRIDER_ADMIN_EMAIL`/`_PASSWORD`), and writes `SWAYRIDER_API_CLIENT_ID`/`SWAYRIDER_API_CLIENT_SECRET` to `.local/swayrider-api.env` at the workspace root.
+- **API - Debug** has it as `preLaunchTask` and loads the file via `envFile`, so launching that config registers automatically. The command is idempotent: if the credentials file already exists it skips, and it retries while authservice is still booting (e.g. right after launching AuthService).
+- The task can also be run manually before launching anything.
+
+Caveats:
+
+- If the target authservice **already has a `swayrider-api` client** — always the case for the deployed dev backend — the task fails with an "already exists" error and aborts the launch. That's expected: for the dev backend, use **API - DevMini** and set `SWAYRIDER_API_CLIENT_ID`/`SWAYRIDER_API_CLIENT_SECRET` yourself (e.g. from the dev stack's credentials volume — see the Secrets section of `environment.example`).
+- The admin account must **not have MFA enabled** — `swctl` can't complete the second factor, so registration would fail.
+- `.local/` at the workspace root is outside every git repo here, so the credentials file is never committed.
+- The gateway must be pointed at the same authservice the task registered against. If you flip `SWAYRIDER_DEBUG_AUTHSERVICE_*` to a different authservice later, delete `.local/swayrider-api.env` (or move it) before launching **API - Debug** so the task re-registers.
 
 ## Mobile app
 

@@ -105,6 +105,26 @@ export SWAYRIDER_LOCAL_REDIS_HOST="127.0.0.1"
 export SWAYRIDER_LOCAL_REDIS_PORT="36379"
 
 
+# Local Postgres
+#
+# The AuthService needs a local postgres instance when running it locally.
+# These are the connection details, adjust them should you change the settings
+# in testing/infra/postgres/compose.yml.
+#
+# These credentials are the LOCAL test container's only — deliberately
+# separate from SWAYRIDER_DB_USER / SWAYRIDER_DB_PASSWORD /
+# SWAYRIDER_AUTH_DB_NAME above, which are the deployed dev system's secrets.
+# The defaults below match testing/infra/postgres/compose.yml, so no extra
+# setup is needed; change both in sync if you want different creds.
+# =============================================================================
+
+export SWAYRIDER_LOCAL_POSTGRES_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_POSTGRES_PORT="35432"
+export SWAYRIDER_LOCAL_POSTGRES_USER="postgresadmin"
+export SWAYRIDER_LOCAL_POSTGRES_PASSWORD="postgrespassword"
+export SWAYRIDER_LOCAL_POSTGRES_DB="authdb"
+
+
 # Secrets
 #
 # Secrets of the deployed dev system
@@ -185,6 +205,24 @@ export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_AUTHSERVICE_WEB_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}"
+
+# Database (AuthService)
+#
+# AuthService's Postgres connection. Defaults to the LOCAL test postgres
+# (testing/infra/postgres). The devbackend alternatives below are for
+# debugging against the deployed dev database instead — only flip to them
+# if applying authservice's migrations at startup to that database is OK.
+# =============================================================================
+export SWAYRIDER_DEBUG_DB_HOST="${SWAYRIDER_LOCAL_POSTGRES_HOST}"
+export SWAYRIDER_DEBUG_DB_PORT="${SWAYRIDER_LOCAL_POSTGRES_PORT}"
+export SWAYRIDER_DEBUG_DB_USER="${SWAYRIDER_LOCAL_POSTGRES_USER}"
+export SWAYRIDER_DEBUG_DB_PASSWORD="${SWAYRIDER_LOCAL_POSTGRES_PASSWORD}"
+export SWAYRIDER_DEBUG_DB_NAME="${SWAYRIDER_LOCAL_POSTGRES_DB}"
+#export SWAYRIDER_DEBUG_DB_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+#export SWAYRIDER_DEBUG_DB_PORT="${SWAYRIDER_DEVBACKEND_DB_PORT}"
+#export SWAYRIDER_DEBUG_DB_USER="${SWAYRIDER_DB_USER}"
+#export SWAYRIDER_DEBUG_DB_PASSWORD="${SWAYRIDER_DB_PASSWORD}"
+#export SWAYRIDER_DEBUG_DB_NAME="${SWAYRIDER_AUTH_DB_NAME}"
 
 # Mail Service
 export SWAYRIDER_DEBUG_MAILSERVICE_HOST="${SWAYRIDER_MAILSERVICE_HOST}"
