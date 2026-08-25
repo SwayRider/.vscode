@@ -50,7 +50,7 @@ export SWAYRIDER_API_HTTP_PORT="34000"
 # These are used for connecting to locally launched debug services
 # =============================================================================
 
-export SWYARIDER_LOCAL_AUTHSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_AUTHSERVICE_HOST="127.0.0.1"
 export SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT="8080"
 export SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT="8081"
 export SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT="8000"
@@ -80,6 +80,24 @@ export SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR="10.0.2.2"
 export SWAYRIDER_LOCAL_API_HOST_GENYMOTION="10.0.3.2"
 export SWAYRIDER_LOCAL_API_HTTP_PORT="8888"
 
+# Debugging the mobile app against a hosted dev backend (e.g.
+# api.swayrider-dev.hevanto-it.com) from an Android emulator.
+#
+# Hosted dev-mini domains use split-horizon DNS: from your LAN they
+# resolve to a private IP that's directly reachable; from anywhere else
+# (public DNS, an Android emulator's own virtual network) they resolve to
+# a public IP that may not accept connections at all. The "Mobile -
+# SwayriderApp (Android Emulator, dev-mini)" launch config works around
+# this by booting the AVD with a custom DNS server so it gets the same
+# private-IP answer your Mac does -- see .vscode/README.md ("Mobile app").
+#
+# Set this to your LAN router's IP (the DNS server your own machine uses).
+export SWAYRIDER_LAN_DNS_SERVER="192.168.1.1"
+
+# Name of the Android AVD that config boots -- must match one you've
+# created (see `flutter emulators`).
+export SWAYRIDER_ANDROID_AVD_NAME="Pixel_7_Pro"
+
 
 # Layer-10 config settings
 #
@@ -103,6 +121,26 @@ export SWAYRIDER_ROUTERSERVICE_VALHALLA_REGION_PORTS="baltics-russia:33001,centr
 
 export SWAYRIDER_LOCAL_REDIS_HOST="127.0.0.1"
 export SWAYRIDER_LOCAL_REDIS_PORT="36379"
+
+
+# Local Postgres
+#
+# The AuthService needs a local postgres instance when running it locally.
+# These are the connection details, adjust them should you change the settings
+# in testing/infra/postgres/compose.yml.
+#
+# These credentials are the LOCAL test container's only — deliberately
+# separate from SWAYRIDER_DB_USER / SWAYRIDER_DB_PASSWORD /
+# SWAYRIDER_AUTH_DB_NAME above, which are the deployed dev system's secrets.
+# The defaults below match testing/infra/postgres/compose.yml, so no extra
+# setup is needed; change both in sync if you want different creds.
+# =============================================================================
+
+export SWAYRIDER_LOCAL_POSTGRES_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_POSTGRES_PORT="35432"
+export SWAYRIDER_LOCAL_POSTGRES_USER="postgresadmin"
+export SWAYRIDER_LOCAL_POSTGRES_PASSWORD="postgrespassword"
+export SWAYRIDER_LOCAL_POSTGRES_DB="authdb"
 
 
 # Secrets
@@ -185,6 +223,36 @@ export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_AUTHSERVICE_WEB_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}"
+
+# Auth Service web host (for REGISTRATION_URL/VERIFICATION_URL/RESET_PASSWORD_URL)
+#
+# The host AuthService embeds in the invite-registration link (and would use
+# as the fallback for verification/reset-password links, though the mobile
+# app always supplies its own — see swayriderapp/lib/config/app_config.dart).
+# Needs to be reachable from wherever the recipient opens the email — flip to
+# the host alias matching whichever mobile run target you're testing the
+# invite/registration flow on. Same aliases as SWAYRIDER_LOCAL_API_HOST* above.
+export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST_GENYMOTION}"
+
+# Database (AuthService)
+#
+# AuthService's Postgres connection. Defaults to the LOCAL test postgres
+# (testing/infra/postgres). The devbackend alternatives below are for
+# debugging against the deployed dev database instead — only flip to them
+# if applying authservice's migrations at startup to that database is OK.
+# =============================================================================
+export SWAYRIDER_DEBUG_DB_HOST="${SWAYRIDER_LOCAL_POSTGRES_HOST}"
+export SWAYRIDER_DEBUG_DB_PORT="${SWAYRIDER_LOCAL_POSTGRES_PORT}"
+export SWAYRIDER_DEBUG_DB_USER="${SWAYRIDER_LOCAL_POSTGRES_USER}"
+export SWAYRIDER_DEBUG_DB_PASSWORD="${SWAYRIDER_LOCAL_POSTGRES_PASSWORD}"
+export SWAYRIDER_DEBUG_DB_NAME="${SWAYRIDER_LOCAL_POSTGRES_DB}"
+#export SWAYRIDER_DEBUG_DB_HOST="${SWAYRIDER_DEVBACKEND_HOST}"
+#export SWAYRIDER_DEBUG_DB_PORT="${SWAYRIDER_DEVBACKEND_DB_PORT}"
+#export SWAYRIDER_DEBUG_DB_USER="${SWAYRIDER_DB_USER}"
+#export SWAYRIDER_DEBUG_DB_PASSWORD="${SWAYRIDER_DB_PASSWORD}"
+#export SWAYRIDER_DEBUG_DB_NAME="${SWAYRIDER_AUTH_DB_NAME}"
 
 # Mail Service
 export SWAYRIDER_DEBUG_MAILSERVICE_HOST="${SWAYRIDER_MAILSERVICE_HOST}"

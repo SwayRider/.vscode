@@ -21,7 +21,10 @@
                 "--dart-define=TILES_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST}",
-                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}"
+                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
+                "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
+                "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
             ]
         },
         {
@@ -38,7 +41,10 @@
                 "--dart-define=TILES_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
-                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}"
+                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
+                "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
+                "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
             ]
         },
         {
@@ -55,7 +61,10 @@
                 "--dart-define=TILES_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
-                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}"
+                "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
+                "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
+                "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
             ]
         },
         {
@@ -64,6 +73,19 @@
             "type": "dart",
             "cwd": "${workspaceFolder}/swayriderapp",
             "program": "test/"
+        },
+        {
+            // Boots the Android emulator via the "Boot Android Emulator
+            // with LAN DNS (dev-mini)" task before attaching, so it can
+            // actually reach a hosted dev-mini backend instead of timing
+            // out on the public DNS answer for its hostname. See
+            // .vscode/README.md ("Mobile app").
+            "name": "Mobile - SwayriderApp (Android Emulator, dev-mini)",
+            "request": "launch",
+            "type": "dart",
+            "cwd": "${workspaceFolder}/swayriderapp",
+            "preLaunchTask": "Boot Android Emulator with LAN DNS (dev-mini)",
+            "deviceId": "emulator-5554"
         },
         {
             "name": "API - DevMini",
@@ -75,6 +97,7 @@
                 "LOG_LEVEL": "debug",
                 "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
                 "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_WEB_PORT": "${env:SWAYRIDER_AUTHSERVICE_WEB_PORT}",
                 "ROUTERSERVICE_HOST": "${env:SWAYRIDER_ROUTERSERVICE_HOST}",
                 "ROUTERSERVICE_PORT": "${env:SWAYRIDER_ROUTERSERVICE_GRPC_PORT}",
                 "SEARCHSERVICE_HOST": "${env:SWAYRIDER_SEARCHSERVICE_HOST}",
@@ -86,7 +109,7 @@
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
                 "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
                 "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
-                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}",
+                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}"
             }
         },
         {
@@ -94,11 +117,14 @@
             "type": "go",
             "request": "launch",
             "program": "${workspaceFolder}/swayrider-api/cmd/swayrider-api",
+            "preLaunchTask": "Register API Service Client",
+            "envFile": "${workspaceFolder}/.local/swayrider-api.env",
             "env": {
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "LOG_LEVEL": "debug",
                 "AUTHSERVICE_HOST": "127.0.0.1",
                 "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_WEB_PORT": "${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}",
                 "ROUTERSERVICE_HOST": "${env:SWAYRIDER_DEBUG_ROUTERSERVICE_HOST}",
                 "ROUTERSERVICE_PORT": "${env:SWAYRIDER_DEBUG_ROUTERSERVICE_GRPC_PORT}",
                 "SEARCHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_SEARCHSERVICE_HOST}",
@@ -108,9 +134,7 @@
                 "TILESSERVICE_HOST": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HOST}",
                 "TILESSERVICE_PORT": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT}",
                 "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
-                "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}",
-                "SWAYRIDER_API_CLIENT_ID": "${env:SWAYRIDER_API_CLIENT_ID}",
-                "SWAYRIDER_API_CLIENT_SECRET": "${env:SWAYRIDER_API_CLIENT_SECRET}",
+                "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}"
             }
         },
         {
@@ -124,20 +148,21 @@
                 "WEB_PORT": "${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}",
                 "WEB_PATH_PREFIX": "/web",
                 "REGISTRATION_MODE": "invite_only",
-                "REGISTRATION_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/register",
-                "VERIFICATION_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/verify",
-                "RESET_PASSWORD_URL": "http://localhost:${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}/web/reset-password",
-                "DB_HOST": "${env:SWAYRIDER_DEVBACKEND_HOST}",
-                "DB_PORT": "${env:SWAYRIDER_DEVBACKEND_DB_PORT}",
-                "DB_USER": "${env:SWAYRIDER_DB_USER}",
-                "DB_PASSWORD": "${env:SWAYRIDER_DB_PASSWORD}",
-                "DB_NAME": "${env:SWAYRIDER_AUTH_DB_NAME}",
+                "REGISTRATION_URL": "http://${env:SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/register",
+                "VERIFICATION_URL": "http://${env:SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
+                "RESET_PASSWORD_URL": "http://${env:SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
+                "MFA_RESET_URL": "http://${env:SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa",
+                "DB_HOST": "${env:SWAYRIDER_DEBUG_DB_HOST}",
+                "DB_PORT": "${env:SWAYRIDER_DEBUG_DB_PORT}",
+                "DB_USER": "${env:SWAYRIDER_DEBUG_DB_USER}",
+                "DB_PASSWORD": "${env:SWAYRIDER_DEBUG_DB_PASSWORD}",
+                "DB_NAME": "${env:SWAYRIDER_DEBUG_DB_NAME}",
                 "DB_SSL_MODE": "disable",
                 "ADMIN_EMAIL": "${env:SWAYRIDER_ADMIN_EMAIL}",
                 "ADMIN_PASSWORD": "${env:SWAYRIDER_ADMIN_PASSWORD}",
-                "MAILER_ADDRESS": "${env:SEAYRIDER_MAILER_ADDRESS}",
-                "MAILSERVICE_HOST": "${env:SWAYRIDER_MAILSERVICE_HOST}",
-                "MAILSERVICE_PORT": "${env:SWAYRIDER_MAILSERVICE_GRPC_PORT}",
+                "MAILER_ADDRESS": "${env:SWAYRIDER_MAILER_ADDRESS}",
+                "MAILSERVICE_HOST": "${env:SWAYRIDER_DEBUG_MAILSERVICE_HOST}",
+                "MAILSERVICE_PORT": "${env:SWAYRIDER_DEBUG_MAILSERVICE_GRPC_PORT}",
                 "COOKIE_NAMESPACE": "com.hevanto-it.swayrider",
                 "ENCRYPTION_MASTER_KEY": "${env:SWAYRIDER_ENCRYPTION_MASTER_KEY}",
                 "ENCRYPTION_MASTER_KEY_PREVIOUS": "${env:SWAYRIDER_ENCRYPTION_MASTER_KEY_PREVIOUS}",
@@ -155,8 +180,8 @@
                 "PELIAS_REGIONS": "${env:SWAYRIDER_SEARCHSERVICE_PELIAS_REGIONS}",
                 "REGIONSERVICE_HOST": "${env:SWAYRIDER_REGIONSERVICE_HOST}",
                 "REGIONSERVICE_PORT": "${env:SWAYRIDER_REGIONSERVICE_GRPC_PORT}",
-                "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
-                "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}"
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}"
             }
         },
         {
@@ -168,8 +193,8 @@
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_MAILSERVICE_HTTP_PORT}",
                 "GRPC_PORT": "${env:SWAYRIDER_LOCAL_MAILSERVICE_GRPC_PORT}",
                 "LOG_LEVEL": "debug",
-                "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
-                "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
                 "SMTP_HOST": "${env:SWAYRIDER_MAIL_SMTP_HOST}",
                 "SMTP_PORT": "${env:SWAYRIDER_MAIL_SMTP_PORT}",
                 "SMTP_USER": "${env:SWAYRIDER_MAIL_SMTP_USER}",
@@ -186,8 +211,8 @@
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_REGIONSERVICE_HTTP_PORT}",
                 "GRPC_PORT": "${env:SWAYRIDER_LOCAL_REGIONSERVICE_GRPC_PORT}",
                 "LOG_LEVEL": "debug",
-                "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
-                "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
                 "GEODATA_DIR": "${workspaceFolder}/localdata/geodata"
             }
         },
@@ -200,8 +225,8 @@
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_ROUTERSERVICE_HTTP_PORT}",
                 "GRPC_PORT": "${env:SWAYRIDER_LOCAL_ROUTERSERVICE_GRPC_PORT}",
                 "LOG_LEVEL": "debug",
-                "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
-                "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
                 "REGIONSERVICE_HOST": "${env:SWAYRIDER_REGIONSERVICE_HOST}",
                 "REGIONSERVICE_PORT": "${env:SWAYRIDER_REGIONSERVICE_GRPC_PORT}",
                 "VALHALLA_REGION_HOSTS": "${env:SWAYRIDER_ROUTERSERVICE_VALHALLA_REGION_HOSTS}",
@@ -216,8 +241,8 @@
             "env": {
                 "HTTP_PORT": "${env:SWAYRIDER_LOCAL_TILESSERVICE_HTTP_PORT}",
                 "LOG_LEVEL": "debug",
-                "AUTHSERVICE_HOST": "${env:SWAYRIDER_AUTHSERVICE_HOST}",
-                "AUTHSERVICE_PORT": "${env:SWAYRIDER_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
                 "TILES_PATH": "${workspaceFolder}/localdata/tiles",
                 "SERVICE_HOST": "127.0.0.1",
                 "SERVICE_PORT": "${env:SWAYRIDER_LOCAL_TILESSERVICE_HTTP_PORT}",
@@ -230,6 +255,20 @@
             "request": "launch",
             "command": "docker compose up",
             "cwd": "${workspaceFolder}/testing/infra/redis"
+        },
+        {
+            "name": "Postgres - Local (testing/infra/postgres)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker compose up",
+            "cwd": "${workspaceFolder}/testing/infra/postgres"
+        },
+        {
+            "name": "Postgres - Local (testing/infra/postgres, Transient)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "docker compose -f compose.transient.yml up",
+            "cwd": "${workspaceFolder}/testing/infra/postgres"
         }
     ]
 }
