@@ -50,7 +50,7 @@ export SWAYRIDER_API_HTTP_PORT="34000"
 # These are used for connecting to locally launched debug services
 # =============================================================================
 
-export SWYARIDER_LOCAL_AUTHSERVICE_HOST="127.0.0.1"
+export SWAYRIDER_LOCAL_AUTHSERVICE_HOST="127.0.0.1"
 export SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT="8080"
 export SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT="8081"
 export SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT="8000"
@@ -205,6 +205,18 @@ export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_AUTHSERVICE_WEB_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_HTTP_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_HTTP_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_GRPC_PORT}"
 #export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_PORT="${SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}"
+
+# Auth Service web host (for REGISTRATION_URL/VERIFICATION_URL/RESET_PASSWORD_URL)
+#
+# The host AuthService embeds in the invite-registration link (and would use
+# as the fallback for verification/reset-password links, though the mobile
+# app always supplies its own — see swayriderapp/lib/config/app_config.dart).
+# Needs to be reachable from wherever the recipient opens the email — flip to
+# the host alias matching whichever mobile run target you're testing the
+# invite/registration flow on. Same aliases as SWAYRIDER_LOCAL_API_HOST* above.
+export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}"
+#export SWAYRIDER_DEBUG_AUTHSERVICE_WEB_HOST="${SWAYRIDER_LOCAL_API_HOST_GENYMOTION}"
 
 # Database (AuthService)
 #
