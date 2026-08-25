@@ -80,6 +80,24 @@ export SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR="10.0.2.2"
 export SWAYRIDER_LOCAL_API_HOST_GENYMOTION="10.0.3.2"
 export SWAYRIDER_LOCAL_API_HTTP_PORT="8888"
 
+# Debugging the mobile app against a hosted dev backend (e.g.
+# api.swayrider-dev.hevanto-it.com) from an Android emulator.
+#
+# Hosted dev-mini domains use split-horizon DNS: from your LAN they
+# resolve to a private IP that's directly reachable; from anywhere else
+# (public DNS, an Android emulator's own virtual network) they resolve to
+# a public IP that may not accept connections at all. The "Mobile -
+# SwayriderApp (Android Emulator, dev-mini)" launch config works around
+# this by booting the AVD with a custom DNS server so it gets the same
+# private-IP answer your Mac does -- see .vscode/README.md ("Mobile app").
+#
+# Set this to your LAN router's IP (the DNS server your own machine uses).
+export SWAYRIDER_LAN_DNS_SERVER="192.168.1.1"
+
+# Name of the Android AVD that config boots -- must match one you've
+# created (see `flutter emulators`).
+export SWAYRIDER_ANDROID_AVD_NAME="Pixel_7_Pro"
+
 
 # Layer-10 config settings
 #

@@ -104,11 +104,14 @@ Caveats:
 
 ## Mobile app
 
-Four configs:
+Five configs:
 
 - **Mobile - SwayriderApp** — no setup required. Talks to the hosted dev backend (`https://api.swayrider-dev.hevanto-it.com`) using the app's compiled-in defaults.
 - **Mobile - SwayriderApp (Local API)** — talks to a **locally-launched** gateway at `SWAYRIDER_LOCAL_API_HOST:SWAYRIDER_LOCAL_API_HTTP_PORT` (`127.0.0.1:8888` by default). Requires **API - DevMini** or **API - Debug** to already be running.
 - **Mobile - SwayriderApp (Local Genymotion)** / **Mobile - SwayriderApp (Local Android Emulator)** — same as "Local API", but using the emulator host alias instead of `127.0.0.1` (see the gotcha below).
+- **Mobile - SwayriderApp (Android Emulator, dev-mini)** — same target as plain **Mobile - SwayriderApp** (the hosted dev backend), but works around a split-horizon DNS gotcha specific to Android emulators — see below.
+
+(`swayriderapp/.vscode/` also has launch configs of its own — those are deprecated leftovers; use the configs here instead.)
 
 Under the hood, `swayriderapp` has no `.env`/dotenv setup — all backend connection settings are compile-time `--dart-define` values consumed in `swayriderapp/lib/config/app_config.dart`, one `SCHEME`/`HOST`/`PORT`/`PATH_PREFIX` group each for `AUTH_API_*`, `TILES_API_*`, `SEARCH_API_*`. The "Local API" config only overrides `SCHEME`/`HOST`/`PORT` — the path-prefix defaults already match what `swayrider-api` serves them on. See `swayriderapp/DEVELOPMENT.md` ("Backend / Configuration") for the full variable list and manual `flutter run --dart-define=...` usage.
 
@@ -120,6 +123,18 @@ flutter run \
   --dart-define=TILES_API_SCHEME=http --dart-define=TILES_API_HOST=10.0.2.2 --dart-define=TILES_API_PORT=8888 \
   --dart-define=SEARCH_API_SCHEME=http --dart-define=SEARCH_API_HOST=10.0.2.2 --dart-define=SEARCH_API_PORT=8888
 ```
+
+### Debugging against a hosted dev backend from an Android emulator
+
+A different gotcha from the one above, specific to hosted dev-mini domains (e.g. `api.swayrider-dev.hevanto-it.com`) rather than a locally-launched gateway: these use **split-horizon DNS** — from your LAN they resolve to a private IP that's directly reachable, but from anywhere else (a public resolver, an Android emulator's own virtual network) they may resolve to a public IP that doesn't accept connections at all. A desktop tool run on your Mac (Bruno, `dig`) gets the private answer and works; a plain **Mobile - SwayriderApp** run on an Android emulator can silently fail to reach the backend for this reason alone (the app used to misreport this as "email not verified" instead of a connection problem — now it shows a proper connection-issue screen, see `swayriderapp/lib/data/services/api/connection_exception.dart`).
+
+**iOS Simulator needs nothing special** — it shares the Mac's real network stack and resolver directly, so it already gets the same LAN answer as the Mac. Only the Android emulator, which runs its own virtual network with its own DNS, needs a workaround.
+
+Use **Mobile - SwayriderApp (Android Emulator, dev-mini)** instead of plain **Mobile - SwayriderApp** when running on an Android emulator against a hosted dev backend. Its `preLaunchTask`, **Boot Android Emulator with LAN DNS (dev-mini)**, boots the `SWAYRIDER_ANDROID_AVD_NAME` AVD directly with `-dns-server SWAYRIDER_LAN_DNS_SERVER` (your LAN router — same DNS server your Mac uses) so the emulator resolves the hostname to the same private IP, polls `adb ... getprop sys.boot_completed` until it's ready, then attaches. Set both vars in `environment.example`/`.envrc` for your setup; if you ever run more than one Android emulator instance concurrently, also update the `emulator-5554` device id in both `launch.json` and `tasks.json` (ids increment for later instances).
+
+The task needs `ANDROID_SDK_ROOT` to find the AVD's system image — it falls back to `~/Library/Android/sdk` if unset, but export it yourself if your SDK lives elsewhere. If the task fails with `PANIC: Cannot find AVD system path`, that's the fix.
+
+Alternatively, for a one-off run without touching DNS at all, bypass the hostname entirely with `--dart-define=AUTH_API_HOST=<LAN IP>` (or the WireGuard address from the `testing/bruno` dev-mini environments), or fix the dev-mini deployment's public-facing path (HAProxy/port-forward) so the public DNS answer is actually reachable.
 
 ### Registration/verification/reset-password links
 

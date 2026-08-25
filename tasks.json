@@ -9,6 +9,62 @@
                 "cwd": "${workspaceFolder}/swctl"
             },
             "problemMatcher": []
+        },
+        {
+            // Boots the Android emulator with its DNS server pointed at
+            // SWAYRIDER_LAN_DNS_SERVER (your LAN router), so it resolves a
+            // hosted dev-mini domain (e.g. api.swayrider-dev.hevanto-it.com)
+            // to the same private, reachable LAN IP your Mac gets instead
+            // of the public DNS answer, which may not accept connections
+            // from outside the LAN at all. See .vscode/README.md
+            // ("Mobile app") for the full story.
+            //
+            // The Flutter/Dart VSCode extension always launches emulators
+            // via `flutter emulators --launch <id>` with no way to pass
+            // `-dns-server`, so this task starts the AVD directly and
+            // blocks (via the boot-completed poll below) until it's ready,
+            // instead of relying on a flaky log-based problem matcher.
+            "label": "Boot Android Emulator with LAN DNS (dev-mini)",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                // The `emulator` binary on PATH may resolve to an unrelated
+                // (e.g. Homebrew cask) install that can't find this AVD's
+                // system image, so this calls the SDK's own emulator binary
+                // directly and sets ANDROID_SDK_ROOT explicitly rather than
+                // relying on it being exported in VSCode's task environment.
+                //
+                // -no-snapshot-load is required: a saved quickboot snapshot
+                // was captured under different network settings than
+                // -dns-server here, so loading it makes the emulator boot
+                // in ~3s, detect the mismatch, and silently restart for a
+                // real cold boot -- our poll below would see the snapshot
+                // boot's sys.boot_completed=1 and declare victory right as
+                // the device drops offline to restart, so `flutter run`
+                // fires at exactly the wrong moment and reports "device not
+                // available". Forcing a cold boot avoids that flap.
+                //
+                // `set -m` (job control) + nohup + `< /dev/null` are all
+                // required: without `set -m`, a background `&` job in a
+                // non-interactive shell stays in *this script's own*
+                // process group, so when the until-loop below returns and
+                // this task's terminal/pty is torn down by VSCode, the
+                // whole process group -- including the just-booted emulator
+                // -- gets killed at the exact moment it finishes booting.
+                // `set -m` gives the backgrounded emulator its own separate
+                // process group (verified: plain `sh -c "cmd &"` shares the
+                // script's pgid; `bash -c "set -m; cmd &"` does not), so a
+                // group-wide kill of the task's terminal doesn't reach it.
+                // nohup+disown+`</dev/null` stay as a second layer of
+                // protection against SIGHUP specifically.
+                "set -m; export ANDROID_SDK_ROOT=\"${env:ANDROID_SDK_ROOT}\"; if [ -z \"$ANDROID_SDK_ROOT\" ]; then ANDROID_SDK_ROOT=\"$HOME/Library/Android/sdk\"; fi; nohup \"$ANDROID_SDK_ROOT/emulator/emulator\" -avd \"${env:SWAYRIDER_ANDROID_AVD_NAME}\" -dns-server \"${env:SWAYRIDER_LAN_DNS_SERVER}\" -no-snapshot-load < /dev/null > /tmp/swayrider-emulator.log 2>&1 & disown; until [ \"$(\"$ANDROID_SDK_ROOT/platform-tools/adb\" -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\\r')\" = \"1\" ]; do sleep 1; done"
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
         }
     ]
 }
