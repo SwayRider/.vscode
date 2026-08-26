@@ -1,3 +1,17 @@
+# Project root and tools/ on PATH
+#
+# SWAYRIDER_ROOT is set automatically to wherever this file lives -- direnv's
+# cwd while evaluating .envrc is always its own directory (the workspace
+# root), and this file is always sourced from the workspace root per the
+# instructions in .vscode/README.md. TOOLS_DIR defaults to "tools"; override
+# it if you relocate the tools/ directory.
+# =============================================================================
+
+export SWAYRIDER_ROOT="$(pwd)"
+export TOOLS_DIR="${TOOLS_DIR:-tools}"
+export PATH="${SWAYRIDER_ROOT}/${TOOLS_DIR}:${PATH}"
+
+
 # Connection to deployed dev environment for testing
 # =============================================================================
 
