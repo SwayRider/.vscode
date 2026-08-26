@@ -6,7 +6,7 @@ This directory has two files that work together:
   ```bash
   source .vscode/environment.example && code .
   ```
-  If you'd rather not edit this file directly, copy it first (`cp .vscode/environment.example .vscode/environment.local.sh`) and source the copy instead. If you change a value while VSCode is already open, re-source and restart VSCode (or at least the terminal/debug session) for the change to take effect. See **Loading the env vars automatically with direnv** below for a way to skip this manual step entirely.
+  If you'd rather not edit this file directly, copy it first (`cp .vscode/environment.example .vscode/environment.local.sh`) and source the copy instead. If you change a value while VSCode is already open, re-source and restart VSCode (or at least the terminal/debug session) for the change to take effect. See **Loading the env vars automatically with direnv** below for a way to skip this manual step entirely. It also sets `SWAYRIDER_ROOT` (the workspace root) and puts `tools/` on `PATH`, so scripts like `gitstatus.py` run from anywhere once it's sourced.
 - **`launch.json`** — the Run & Debug configs, one per backend service plus the API gateway, Redis, Postgres, and the mobile app. Each reads its config from `${env:SWAYRIDER_...}` vars rather than hardcoding values, so the same `launch.json` works whether you're pointed at your own dev-mini or a teammate's.
 
 ## Loading the env vars automatically with direnv
