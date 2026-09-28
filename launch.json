@@ -22,6 +22,9 @@
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST}",
                 "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=ROUTER_API_SCHEME=http",
+                "--dart-define=ROUTER_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST}",
+                "--dart-define=ROUTER_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
                 "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
                 "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
@@ -42,6 +45,9 @@
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
                 "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=ROUTER_API_SCHEME=http",
+                "--dart-define=ROUTER_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}",
+                "--dart-define=ROUTER_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
                 "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
                 "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_GENYMOTION}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
@@ -62,6 +68,9 @@
                 "--dart-define=SEARCH_API_SCHEME=http",
                 "--dart-define=SEARCH_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
                 "--dart-define=SEARCH_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "--dart-define=ROUTER_API_SCHEME=http",
+                "--dart-define=ROUTER_API_HOST=${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}",
+                "--dart-define=ROUTER_API_PORT=${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
                 "--dart-define=VERIFICATION_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/verify-user",
                 "--dart-define=RESET_PASSWORD_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-password",
                 "--dart-define=MFA_RESET_REDIRECT_URL=http://${env:SWAYRIDER_LOCAL_API_HOST_ANDROID_EMULATOR}:${env:SWAYRIDER_LOCAL_API_HTTP_PORT}/web/reset-mfa"
