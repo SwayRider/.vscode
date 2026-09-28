@@ -98,9 +98,19 @@ The gateway needs a service client on authservice (`region:query routing:execute
 
 Caveats:
 
-- If the target authservice **already has a `swayrider-api` client** — always the case for the deployed dev backend — and no local credentials file exists, the task fails with an "already exists" error and aborts the launch. That's expected: for the dev backend, use **API - DevMini** and set `SWAYRIDER_API_CLIENT_ID`/`SWAYRIDER_API_CLIENT_SECRET` yourself (e.g. from the dev stack's credentials volume — see the Secrets section of `environment.example`).
+- If the target authservice **already has a `swayrider-api` client** — always the case for the deployed dev backend — and no local credentials file exists, the task fails with an "already exists" error and aborts the launch. That's expected: for the dev backend with *every* downstream service remote, use **API - DevMini** and set `SWAYRIDER_API_CLIENT_ID`/`SWAYRIDER_API_CLIENT_SECRET` yourself (e.g. from the dev stack's credentials volume — see the Secrets section of `environment.example`). If you want AuthService to stay on the dev backend while still mixing *other* services locally (the case Mixed mode's worked example doesn't cover, since it flips AuthService itself to local), use **API - Debug (Personal Client)** instead — see below.
 - The admin account must **not have MFA enabled** — `swctl` can't complete the second factor, so registration would fail.
 - `.local/` at the workspace root is outside every git repo here, so the credentials file is never committed.
+
+### Registering a personal client (AuthService stays on the dev backend)
+
+`API - DevMini`'s downstream hosts/ports are hardcoded to the always-remote `SWAYRIDER_*_HOST` vars, not `DEBUG_*`, so it can't route to a locally-run service the way `API - Debug` can. If you want that per-service mixing *and* AuthService has to stay on the dev backend (its shared `swayrider-api` client's secret is unrecoverable, so the plain `Register API Service Client` task will always fail there — see the caveat above), use **API - Debug (Personal Client)** instead of **API - Debug**:
+
+1. Set `SWAYRIDER_DEV_CLIENT_NAME` in `environment.example`/`.envrc` to something unique to you, e.g. `swayrider-api-<yourname>-dev`.
+2. Launch **API - Debug (Personal Client)**. Its prelaunch task, **Register API Service Client (Personal)**, registers a client under that name instead of the shared `swayrider-api` one, and writes credentials to `.local/swayrider-api-personal.env` (kept separate from `API - Debug`'s file so the two never collide). It's idempotent the same way the shared-client task is.
+3. Everything else — the `DEBUG_*` per-service local/remote toggles — works exactly like **API - Debug**.
+
+A personal client, once created, is yours: nobody else should be registering under the same name, so there's no shared-secret problem to run into again.
 
 ## Mobile app
 

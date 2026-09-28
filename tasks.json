@@ -11,6 +11,21 @@
             "problemMatcher": []
         },
         {
+            // Registers a per-developer-named service client instead of the
+            // shared "swayrider-api" one, for when AuthService stays on the
+            // dev backend (which already has that client permanently, with
+            // an unrecoverable secret -- see .vscode/README.md, "Registering
+            // the API gateway's service client") but you still want to mix
+            // other services locally via API - Debug (Personal Client).
+            "label": "Register API Service Client (Personal)",
+            "type": "shell",
+            "command": "mkdir -p \"${workspaceFolder}/.local\" && go run ./cmd/swctl auth ensure-service-client --auth-host \"${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}\" --auth-port \"${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}\" --user \"${env:SWAYRIDER_ADMIN_EMAIL}\" --password \"${env:SWAYRIDER_ADMIN_PASSWORD}\" --output \"${workspaceFolder}/.local/swayrider-api-personal.env\" \"${env:SWAYRIDER_DEV_CLIENT_NAME}\" region:query routing:execute search:execute tiles:serve",
+            "options": {
+                "cwd": "${workspaceFolder}/swctl"
+            },
+            "problemMatcher": []
+        },
+        {
             // Boots the Android emulator with its DNS server pointed at
             // SWAYRIDER_LAN_DNS_SERVER (your LAN router), so it resolves a
             // hosted dev-mini domain (e.g. api.swayrider-dev.hevanto-it.com)

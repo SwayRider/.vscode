@@ -212,6 +212,14 @@ export SWAYRIDER_MAIL_SMTP_PASSWORD="<smtp-password>"
 export SWAYRIDER_API_CLIENT_ID="<clientid>"
 export SWAYRIDER_API_CLIENT_SECRET="<clientsecret>"
 
+# Personal service-client name for "API - Debug (Personal Client)"
+#
+# Used instead of the shared "swayrider-api" client when AuthService stays
+# on the dev backend (which already has that client permanently, with an
+# unrecoverable secret) but you still want per-service local/remote mixing.
+# Must be unique per developer to avoid colliding with teammates' clients.
+export SWAYRIDER_DEV_CLIENT_NAME="swayrider-api-<yourname>-dev"
+
 
 # ========================================================
 # Dynamic configurations
