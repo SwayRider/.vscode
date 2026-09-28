@@ -138,6 +138,44 @@
             }
         },
         {
+            // Same as "API - Debug", but registers (and authenticates with)
+            // a per-developer-named service client instead of the shared
+            // "swayrider-api" one -- for when AuthService stays on the dev
+            // backend, which already has that shared client permanently
+            // (unrecoverable secret) and would otherwise make the
+            // "Register API Service Client" prelaunch task fail with
+            // AlreadyExists. See .vscode/README.md, "Registering the API
+            // gateway's service client".
+            //
+            // Unlike "API - Debug", AUTHSERVICE_HOST here follows
+            // SWAYRIDER_DEBUG_AUTHSERVICE_HOST rather than a hardcoded
+            // 127.0.0.1 -- this config exists specifically for the case
+            // where that host is the remote dev backend, not localhost.
+            "name": "API - Debug (Personal Client)",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/swayrider-api/cmd/swayrider-api",
+            "preLaunchTask": "Register API Service Client (Personal)",
+            "envFile": "${workspaceFolder}/.local/swayrider-api-personal.env",
+            "env": {
+                "HTTP_PORT": "${env:SWAYRIDER_LOCAL_API_HTTP_PORT}",
+                "LOG_LEVEL": "debug",
+                "AUTHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_HOST}",
+                "AUTHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_AUTHSERVICE_GRPC_PORT}",
+                "AUTHSERVICE_WEB_PORT": "${env:SWAYRIDER_LOCAL_AUTHSERVICE_WEB_PORT}",
+                "ROUTERSERVICE_HOST": "${env:SWAYRIDER_DEBUG_ROUTERSERVICE_HOST}",
+                "ROUTERSERVICE_PORT": "${env:SWAYRIDER_DEBUG_ROUTERSERVICE_GRPC_PORT}",
+                "SEARCHSERVICE_HOST": "${env:SWAYRIDER_DEBUG_SEARCHSERVICE_HOST}",
+                "SEARCHSERVICE_PORT": "${env:SWAYRIDER_DEBUG_SEARCHSERVICE_GRPC_PORT}",
+                "REGIONSERVICE_HOST": "${env:SWAYRIDER_DEBUG_REGIONSERVICE_HOST}",
+                "REGIONSERVICE_PORT": "${env:SWAYRIDER_DEBUG_REGIONSERVICE_GRPC_PORT}",
+                "TILESSERVICE_HOST": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HOST}",
+                "TILESSERVICE_PORT": "${env:SWAYRIDER_DEBUG_TILESSERVICE_HTTP_PORT}",
+                "REDIS_HOST": "${env:SWAYRIDER_LOCAL_REDIS_HOST}",
+                "REDIS_PORT": "${env:SWAYRIDER_LOCAL_REDIS_PORT}"
+            }
+        },
+        {
             "name": "AuthService",
             "type": "go",
             "request": "launch",
